@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    card_view:cardCornerRadius="12dp"
+    card_view:cardCornerRadius="14dp"
     card_view:cardElevation="3dp"
     card_view:cardBackgroundColor="#FFFFFF">
 
@@ -13,18 +13,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="14dp"
         android:gravity="center_vertical">
 
-        <!-- Left: Icon -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="💳"
-            android:textSize="28sp"
+        <!-- Accent bar -->
+        <View
+            android:layout_width="4dp"
+            android:layout_height="52dp"
+            android:background="#1565C0"
             android:layout_marginEnd="14dp"/>
 
-        <!-- Middle: Date + TXN -->
+        <!-- Middle: date + mode + txn -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -36,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#212121"
+                android:textColor="#0D1B2A"
                 android:textStyle="bold"/>
 
             <TextView
@@ -45,18 +44,18 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="#1565C0"
-                android:layout_marginTop="2dp"/>
+                android:layout_marginTop="3dp"/>
 
             <TextView
                 android:id="@+id/tvRechargeTxn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
-                android:textColor="#9E9E9E"
+                android:textSize="10sp"
+                android:textColor="#B0BEC5"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Right: Amount -->
+        <!-- Amount (right side) -->
         <TextView
             android:id="@+id/tvRechargeAmount"
             android:layout_width="wrap_content"

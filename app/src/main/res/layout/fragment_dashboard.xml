@@ -3,223 +3,404 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F4F8">
+    android:background="#EEF2F7">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="20dp">
 
-        <!-- Alert Banner (shown when low balance) -->
+        <!-- Loading spinner -->
+        <ProgressBar android:id="@+id/progressDash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
+
+        <!-- LOW BALANCE ALERT -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardAlert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="10dp"
             android:visibility="gone"
-            card_view:cardCornerRadius="12dp"
-            card_view:cardBackgroundColor="#FFEB3B"
-            card_view:cardElevation="4dp">
-            <TextView
-                android:id="@+id/tvAlertBanner"
+            card_view:cardCornerRadius="14dp"
+            card_view:cardBackgroundColor="#FFF8E1"
+            card_view:cardElevation="3dp">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:padding="14dp"
-                android:textColor="#B71C1C"
-                android:textSize="14sp"
-                android:textStyle="bold"/>
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚠️"
+                    android:textSize="20sp"
+                    android:layout_marginEnd="10dp"/>
+                <TextView
+                    android:id="@+id/tvAlertBanner"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColor="#E65100"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:lineSpacingExtra="3dp"/>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Balance Card -->
+        <!-- ═══════════════════════════════════════
+             BALANCE CARD (hero card)
+             ═══════════════════════════════════════ -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardBalanceState"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            card_view:cardCornerRadius="16dp"
-            card_view:cardElevation="6dp">
+            android:layout_marginBottom="10dp"
+            card_view:cardCornerRadius="20dp"
+            card_view:cardElevation="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp"
-                android:background="#1565C0">
+                android:background="@drawable/bg_balance_card">
 
+                <!-- Row: label + state badge -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="বর্তমান ব্যালেন্স"
-                        android:textColor="#B3E5FC"
-                        android:textSize="14sp"/>
-
+                        android:textColor="#B3DAFF"
+                        android:textSize="13sp"/>
                     <TextView
                         android:id="@+id/tvStateLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="সক্রিয়"
-                        android:textColor="#A5D6A7"
-                        android:textSize="13sp"
+                        android:textColor="#A5FFD6"
+                        android:textSize="12sp"
                         android:textStyle="bold"
-                        android:background="#1A4DB5"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
+                        android:background="@drawable/bg_badge"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
                         android:paddingTop="4dp"
                         android:paddingBottom="4dp"/>
-
                 </LinearLayout>
 
+                <!-- Big balance amount -->
                 <TextView
                     android:id="@+id/tvBalance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="৳ —"
                     android:textColor="#FFFFFF"
-                    android:textSize="42sp"
+                    android:textSize="46sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Divider line -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#33FFFFFF"
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- Row: এই মাসের বিল  |  আনুমানিক বিল -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Left: monthly BDT from API -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="এই মাসের ব্যবহার"
+                            android:textColor="#AACCFF"
+                            android:textSize="11sp"
+                            android:layout_marginBottom="3dp"/>
+                        <!-- API returns BDT directly: "In BDT: 857.97 BDT" -->
+                        <TextView
+                            android:id="@+id/tvUsage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="৳ —"
+                            android:textColor="#FFFFFF"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <!-- Vertical separator -->
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#33FFFFFF"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <!-- Right: estimated bill / suggest -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="আনুমানিক বিল"
+                            android:textColor="#AACCFF"
+                            android:textSize="11sp"
+                            android:layout_marginBottom="3dp"/>
+                        <TextView
+                            android:id="@+id/tvEstBill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Last reading time -->
+                <TextView
+                    android:id="@+id/tvReading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="সর্বশেষ: —"
+                    android:textColor="#80B8FF"
+                    android:textSize="11sp"
+                    android:layout_marginTop="12dp"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- SUGGEST RECHARGE CARD -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSuggest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            card_view:cardCornerRadius="14dp"
+            card_view:cardBackgroundColor="#E8F5E9"
+            card_view:cardElevation="3dp">
+            <TextView
+                android:id="@+id/tvSuggestRecharge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textColor="#1B5E20"
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"/>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ═══════════════════════════════════════
+             CUSTOMER INFO CARD
+             ═══════════════════════════════════════ -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            card_view:cardCornerRadius="16dp"
+            card_view:cardElevation="4dp"
+            card_view:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Section header with accent bar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="20dp"
+                        android:background="#1565C0"
+                        android:layout_marginEnd="8dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="গ্রাহকের তথ্য"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#1565C0"/>
+                </LinearLayout>
+
+                <TextView android:id="@+id/tvName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#0D1B2A"
+                    android:paddingBottom="4dp"/>
+
+                <TextView android:id="@+id/tvAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="#607D8B"
+                    android:paddingBottom="3dp"/>
+
+                <TextView android:id="@+id/tvMeter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="#607D8B"
+                    android:paddingBottom="10dp"/>
+
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F0F0F0"
+                    android:layout_marginBottom="10dp"/>
+
+                <!-- Phone -->
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="6dp">
+                    <TextView android:layout_width="26dp" android:layout_height="wrap_content"
+                        android:text="📞" android:textSize="15sp"/>
+                    <TextView android:id="@+id/tvPhone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="#333333"/>
+                </LinearLayout>
+
+                <!-- Address -->
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="6dp">
+                    <TextView android:layout_width="26dp" android:layout_height="wrap_content"
+                        android:text="📍" android:textSize="15sp"/>
+                    <TextView android:id="@+id/tvAddress"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#444444"/>
+                </LinearLayout>
+
+                <!-- Feeder | Phase -->
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView android:id="@+id/tvFeeder"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="#78909C"/>
+                    <TextView android:id="@+id/tvPhase"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="#78909C"
+                        android:gravity="end"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ═══════════════════════════════════════
+             MONTHLY CHART CARD
+             ═══════════════════════════════════════ -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            card_view:cardCornerRadius="16dp"
+            card_view:cardElevation="4dp"
+            card_view:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="20dp"
+                        android:background="#1565C0"
+                        android:layout_marginEnd="8dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="এই মাসের বিল (BDT)" android:textColor="#B3E5FC" android:textSize="11sp"/>
-                        <TextView android:id="@+id/tvUsage" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="— kWh" android:textColor="#FFFFFF" android:textSize="16sp" android:textStyle="bold"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="আনুমানিক বিল" android:textColor="#B3E5FC" android:textSize="11sp"/>
-                        <TextView android:id="@+id/tvEstBill" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="—" android:textColor="#FFFFFF" android:textSize="16sp" android:textStyle="bold"/>
-                    </LinearLayout>
-
+                        android:text="মাসিক ব্যবহার (kWh)"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#1565C0"/>
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tvReading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="সর্বশেষ রিডিং: —"
-                    android:textColor="#90CAF9"
-                    android:textSize="12sp"
-                    android:layout_marginTop="8dp"/>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Customer Info Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            card_view:cardCornerRadius="12dp"
-            card_view:cardElevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="গ্রাহকের তথ্য"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#1565C0"
-                    android:layout_marginBottom="12dp"/>
-
-                <TextView android:id="@+id/tvName"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="18sp" android:textStyle="bold" android:textColor="#212121" android:paddingBottom="4dp"/>
-                <TextView android:id="@+id/tvAccount"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="13sp" android:textColor="#666" android:paddingBottom="4dp"/>
-                <TextView android:id="@+id/tvMeter"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="13sp" android:textColor="#666" android:paddingBottom="8dp"/>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginBottom="8dp"/>
-                <TextView android:id="@+id/tvPhone"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="14sp" android:textColor="#333" android:paddingBottom="4dp"/>
-                <TextView android:id="@+id/tvAddress"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="14sp" android:textColor="#333" android:paddingBottom="4dp"/>
-                <TextView android:id="@+id/tvFeeder"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="13sp" android:textColor="#666" android:paddingBottom="4dp"/>
-                <TextView android:id="@+id/tvPhase"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="13sp" android:textColor="#666"/>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Monthly Chart Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            card_view:cardCornerRadius="12dp"
-            card_view:cardElevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="মাসিক ব্যবহার (kWh)"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#1565C0"
-                    android:layout_marginBottom="8dp"/>
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/barChart"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"/>
+                    android:layout_height="210dp"/>
+
+                <TextView
+                    android:id="@+id/tvChartEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📊 মাসিক ডেটা পাওয়া যায়নি"
+                    android:textSize="14sp"
+                    android:textColor="#90A4AE"
+                    android:gravity="center"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:visibility="gone"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Refresh -->
-        <ProgressBar android:id="@+id/progressDash"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_gravity="center" android:visibility="gone"/>
-
+        <!-- REFRESH BUTTON -->
         <Button android:id="@+id/btnRefresh"
-            android:layout_width="match_parent" android:layout_height="48dp"
-            android:text="🔄 রিফ্রেশ করুন"
-            android:backgroundTint="#E3F2FD"
-            android:textColor="#1565C0"
-            android:layout_marginBottom="16dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="🔄  রিফ্রেশ করুন"
+            android:backgroundTint="#1565C0"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:stateListAnimator="@null"/>
 
     </LinearLayout>
 </ScrollView>

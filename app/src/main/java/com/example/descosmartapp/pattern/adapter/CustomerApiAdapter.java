@@ -5,7 +5,10 @@ import com.example.descosmartapp.model.CustomerResponse;
 
 /**
  * ADAPTER PATTERN — Converts raw API responses to unified UI-friendly model.
- * If API changes or a new provider is added, only this adapter needs updating.
+ *
+ * IMPORTANT: currentMonthConsumption from API = BDT (Taka), not kWh.
+ * Website confirms: "Used This Month: 139.39 kWh | In BDT: 857.97 BDT"
+ * The API's currentMonthConsumption field = 857.97 = BDT.
  */
 public class CustomerApiAdapter {
 
@@ -18,7 +21,7 @@ public class CustomerApiAdapter {
         public String feeder;
         public String phase;
         public double balance;
-        public double monthlyUsage;
+        public double monthlyBDT;   // current month cost in BDT (from API)
         public String lastReading;
         public String installDate;
         public String sdName;
@@ -43,9 +46,9 @@ public class CustomerApiAdapter {
         }
 
         if (balance != null) {
-            model.balance      = balance.balance;
-            model.monthlyUsage = balance.currentMonthConsumption;
-            model.lastReading  = safe(balance.readingTime);
+            model.balance     = balance.balance;
+            model.monthlyBDT  = balance.currentMonthConsumption; // BDT
+            model.lastReading = safe(balance.readingTime);
         }
 
         return model;

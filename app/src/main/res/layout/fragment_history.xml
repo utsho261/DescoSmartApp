@@ -1,28 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#F0F4F8">
+    android:background="#EEF2F7">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="রিচার্জ ইতিহাস" android:textSize="20sp"
-        android:textStyle="bold" android:textColor="#1565C0" android:layout_marginBottom="12dp"/>
+    <!-- ══════════════════════════════════
+         SUMMARY CARDS ROW (top)
+         ══════════════════════════════════ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="6dp">
 
+        <!-- This month card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="7dp"
+            card_view:cardCornerRadius="16dp"
+            card_view:cardElevation="5dp"
+            card_view:cardBackgroundColor="#1565C0">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💳  এই মাসে রিচার্জ"
+                    android:textColor="#B3DAFF"
+                    android:textSize="11sp"
+                    android:layout_marginBottom="8dp"/>
+                <TextView
+                    android:id="@+id/tvMonthTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="হিসাব হচ্ছে..."
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- This year card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="7dp"
+            card_view:cardCornerRadius="16dp"
+            card_view:cardElevation="5dp"
+            card_view:cardBackgroundColor="#0D47A1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📅  এই বছর রিচার্জ"
+                    android:textColor="#B3DAFF"
+                    android:textSize="11sp"
+                    android:layout_marginBottom="8dp"/>
+                <TextView
+                    android:id="@+id/tvYearTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="হিসাব হচ্ছে..."
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <!-- ══════════════════════════════════
+         SECTION TITLE
+         ══════════════════════════════════ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="18dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="8dp">
+        <View
+            android:layout_width="4dp"
+            android:layout_height="20dp"
+            android:background="#1565C0"
+            android:layout_marginEnd="8dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="রিচার্জ ইতিহাস (গত ১ বছর)"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#1565C0"/>
+    </LinearLayout>
+
+    <!-- Loading -->
     <ProgressBar android:id="@+id/progressHistory"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="center" android:visibility="gone"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
+    <!-- Empty state -->
     <TextView android:id="@+id/tvEmpty"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="কোনো রিচার্জ ইতিহাস নেই" android:textSize="16sp"
-        android:textColor="#999" android:gravity="center" android:visibility="gone"
-        android:layout_marginTop="32dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="কোনো রিচার্জ ইতিহাস নেই"
+        android:textSize="15sp"
+        android:textColor="#90A4AE"
+        android:gravity="center"
+        android:visibility="gone"
+        android:paddingTop="40dp"/>
 
+    <!-- List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHistory"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="14dp"
+        android:clipToPadding="false"/>
 
 </LinearLayout>

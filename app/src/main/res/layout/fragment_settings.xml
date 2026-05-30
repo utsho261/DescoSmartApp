@@ -1,33 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#F0F4F8">
+    android:background="#EEF2F7">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="মিটার ব্যবস্থাপনা" android:textSize="20sp"
-        android:textStyle="bold" android:textColor="#1565C0" android:layout_marginBottom="12dp"/>
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="18dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="10dp">
+        <View
+            android:layout_width="4dp"
+            android:layout_height="22dp"
+            android:background="#1565C0"
+            android:layout_marginEnd="8dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="মিটার ব্যবস্থাপনা"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1565C0"/>
+    </LinearLayout>
 
+    <!-- RecyclerView of meters -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerMeters"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"/>
 
-    <Button android:id="@+id/btnAddNewMeter"
-        android:layout_width="match_parent" android:layout_height="48dp"
-        android:text="+ নতুন মিটার যোগ করুন"
-        android:backgroundTint="#1565C0"
-        android:textColor="#FFFFFF"
-        android:layout_marginTop="8dp"/>
+    <!-- Bottom action buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="4dp">
 
-    <Button android:id="@+id/btnReschedule"
-        android:layout_width="match_parent" android:layout_height="48dp"
-        android:text="🔔 নোটিফিকেশন রিসেট করুন"
-        android:backgroundTint="#E3F2FD"
-        android:textColor="#1565C0"
-        android:layout_marginTop="8dp"/>
+        <Button android:id="@+id/btnAddNewMeter"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="+ নতুন মিটার যোগ করুন"
+            android:backgroundTint="#1565C0"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="8dp"/>
+
+        <Button android:id="@+id/btnReschedule"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="🔔  নোটিফিকেশন রিসেট করুন"
+            android:backgroundTint="#E8F0FE"
+            android:textColor="#1565C0"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:stateListAnimator="@null"/>
+
+    </LinearLayout>
 
 </LinearLayout>
