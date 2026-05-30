@@ -99,7 +99,7 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="এই মাসের ব্যবহার" android:textColor="#B3E5FC" android:textSize="11sp"/>
+                            android:text="এই মাসের বিল (BDT)" android:textColor="#B3E5FC" android:textSize="11sp"/>
                         <TextView android:id="@+id/tvUsage" android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="— kWh" android:textColor="#FFFFFF" android:textSize="16sp" android:textStyle="bold"/>
                     </LinearLayout>

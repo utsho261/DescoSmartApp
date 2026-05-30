@@ -5,38 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    card_view:cardCornerRadius="10dp"
-    card_view:cardElevation="2dp">
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="3dp"
+    card_view:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="14dp"
+        android:padding="16dp"
         android:gravity="center_vertical">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="💳" android:textSize="24sp" android:layout_marginEnd="12dp"/>
+        <!-- Left: Icon -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="💳"
+            android:textSize="28sp"
+            android:layout_marginEnd="14dp"/>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:orientation="vertical">
-            <TextView android:id="@+id/tvRechargeDate"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textSize="13sp" android:textColor="#666"/>
-            <TextView android:id="@+id/tvRechargeTxn"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textSize="11sp" android:textColor="#999"/>
+        <!-- Middle: Date + TXN -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvRechargeDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#212121"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvRechargeMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#1565C0"
+                android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:id="@+id/tvRechargeTxn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="#9E9E9E"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:orientation="vertical" android:gravity="end">
-            <TextView android:id="@+id/tvRechargeAmount"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textSize="18sp" android:textStyle="bold" android:textColor="#2E7D32"/>
-            <TextView android:id="@+id/tvRechargeMode"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textSize="11sp" android:textColor="#999"/>
-        </LinearLayout>
+        <!-- Right: Amount -->
+        <TextView
+            android:id="@+id/tvRechargeAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#2E7D32"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -143,12 +143,12 @@ public class DashboardFragment extends Fragment {
         tvFeeder.setText("ফিডার: " + m.feeder);
         tvPhase.setText("ফেজ: " + m.phase);
         tvBalance.setText("৳ " + m.balance);
-        tvUsage.setText(m.monthlyUsage + " kWh");
+        tvUsage.setText("৳ " + String.format("%.2f", m.monthlyUsage));
         tvReading.setText("সর্বশেষ: " + m.lastReading);
 
         // Strategy pattern — estimated bill
         double estBill = new ResidentialBillingStrategy().calculate(m.monthlyUsage);
-        tvEstBill.setText("আনুমানিক বিল: ৳ " + estBill);
+        tvEstBill.setText("৳ " + String.format("%.2f", m.monthlyUsage));
 
         // State pattern
         MeterState state = MeterStateFactory.resolve(m.balance, activeMeter.lowBalanceThreshold);

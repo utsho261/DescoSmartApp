@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_dashboard"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="ড্যাশবোর্ড"/>
+    <item android:id="@+id/nav_history"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="ইতিহাস"/>
+    <item android:id="@+id/nav_reports"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="রিপোর্ট"/>
+    <item android:id="@+id/nav_settings"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="সেটিংস"/>
+</menu>
