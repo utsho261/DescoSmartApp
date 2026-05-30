@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#F0F4F8">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="📄" android:textSize="64sp" android:layout_marginTop="24dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="বিদ্যুৎ রিপোর্ট" android:textSize="24sp"
+        android:textStyle="bold" android:textColor="#1565C0" android:layout_marginTop="8dp"/>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="সক্রিয় মিটারের গত ৬ মাসের ব্যবহার ও রিচার্জ ইতিহাস সহ একটি রিপোর্ট তৈরি হবে এবং Download ফোল্ডারে সেভ হবে।"
+        android:textSize="14sp" android:textColor="#666" android:gravity="center"
+        android:layout_marginTop="12dp" android:layout_marginBottom="32dp"/>
+
+    <Button android:id="@+id/btnGenerate"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="রিপোর্ট তৈরি করুন"
+        android:backgroundTint="#1565C0"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" android:textStyle="bold"/>
+
+    <ProgressBar android:id="@+id/progressReport"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" android:visibility="gone"/>
+
+    <TextView android:id="@+id/tvReportStatus"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="14sp" android:textColor="#333"
+        android:gravity="center" android:layout_marginTop="16dp"/>
+
+</LinearLayout>

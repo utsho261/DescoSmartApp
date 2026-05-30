@@ -1,186 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="#F0F4F8">
 
+    <!-- Top Header Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:background="#1565C0"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DESCO Smart App"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:textColor="#1565C0"
-            android:gravity="center"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp"/>
+            android:text="⚡ "
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"/>
 
-        <!-- Search Card -->
-        <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvActiveMeter"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            card_view:cardCornerRadius="10dp"
-            card_view:cardElevation="4dp">
+            android:layout_weight="1"
+            android:text="সক্রিয় মিটার"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Account Number দিন"
-                    android:textSize="14sp"
-                    android:textColor="#666666"
-                    android:layout_marginBottom="6dp"/>
-
-                <EditText
-                    android:id="@+id/etAccountNo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="যেমন: 31228161"
-                    android:inputType="number"
-                    android:padding="12dp"
-                    android:textSize="16sp"/>
-
-                <Button
-                    android:id="@+id/btnSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="তথ্য দেখুন"
-                    android:layout_marginTop="12dp"
-                    android:backgroundTint="#1565C0"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"/>
-
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Customer Info Card -->
-        <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            card_view:cardCornerRadius="10dp"
-            card_view:cardElevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="গ্রাহকের তথ্য"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#1565C0"
-                    android:layout_marginBottom="12dp"/>
-
-                <TextView android:id="@+id/txtName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" android:textColor="#212121"
-                    android:paddingBottom="6dp"/>
-
-                <TextView android:id="@+id/txtMeterNo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" android:textColor="#212121"
-                    android:paddingBottom="6dp"/>
-
-                <TextView android:id="@+id/txtContact"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" android:textColor="#212121"
-                    android:paddingBottom="6dp"/>
-
-                <TextView android:id="@+id/txtAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" android:textColor="#212121"
-                    android:paddingBottom="6dp"/>
-
-                <TextView android:id="@+id/txtFeeder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" android:textColor="#212121"
-                    android:paddingBottom="6dp"/>
-
-                <TextView android:id="@+id/txtPhase"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" android:textColor="#212121"/>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Balance Card -->
-        <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
-            card_view:cardCornerRadius="10dp"
-            card_view:cardElevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ব্যালেন্স তথ্য"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#1565C0"
-                    android:layout_marginBottom="12dp"/>
-
-                <TextView android:id="@+id/txtBalance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp" android:textStyle="bold"
-                    android:textColor="#2E7D32" android:paddingBottom="6dp"/>
-
-                <TextView android:id="@+id/txtConsumption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" android:textColor="#212121"
-                    android:paddingBottom="6dp"/>
-
-                <TextView android:id="@+id/txtReadingTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp" android:textColor="#666666"/>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        <ImageButton
+            android:id="@+id/btnSwitchMeter"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_sort_by_size"
+            android:tint="#FFFFFF"
+            android:contentDescription="মিটার পরিবর্তন"/>
 
     </LinearLayout>
-</ScrollView>
+
+    <!-- Fragment Container -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@color/nav_selector"
+        app:itemTextColor="@color/nav_selector"
+        app:itemRippleColor="#E3F2FD"/>
+
+</LinearLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F0F4F8">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="মিটার ব্যবস্থাপনা" android:textSize="20sp"
+        android:textStyle="bold" android:textColor="#1565C0" android:layout_marginBottom="12dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMeters"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button android:id="@+id/btnAddNewMeter"
+        android:layout_width="match_parent" android:layout_height="48dp"
+        android:text="+ নতুন মিটার যোগ করুন"
+        android:backgroundTint="#1565C0"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="8dp"/>
+
+    <Button android:id="@+id/btnReschedule"
+        android:layout_width="match_parent" android:layout_height="48dp"
+        android:text="🔔 নোটিফিকেশন রিসেট করুন"
+        android:backgroundTint="#E3F2FD"
+        android:textColor="#1565C0"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

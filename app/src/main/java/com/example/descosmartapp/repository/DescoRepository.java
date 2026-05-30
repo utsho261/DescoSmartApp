@@ -14,6 +14,9 @@ public class DescoRepository {
     public DescoRepository() {
         api = ApiClient.getClient().create(DescoApi.class);
     }
+    public void getCustomerByMeter(String meterNo, Callback<CustomerResponse> callback) {
+        api.getCustomerByMeter(meterNo).enqueue(callback);
+    }
 
     public void getCustomerInfo(String accountNo, Callback<CustomerResponse> callback) {
         api.getCustomerInfo(accountNo).enqueue(callback);
