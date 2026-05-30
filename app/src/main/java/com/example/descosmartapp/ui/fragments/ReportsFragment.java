@@ -1,12 +1,9 @@
 package com.example.descosmartapp.ui.fragments;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.example.descosmartapp.R;
@@ -18,7 +15,6 @@ import com.example.descosmartapp.model.RechargeResponse;
 import com.example.descosmartapp.pattern.builder.PdfReportBuilder;
 import com.example.descosmartapp.pattern.facade.DescoServiceFacade;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -60,43 +56,64 @@ public class ReportsFragment extends Fragment {
 
         Runnable checkAndBuild = () -> {
             if (done.incrementAndGet() >= 3) {
-                requireActivity().runOnUiThread(() -> buildPdf(meter, balRef.get(), monthRef.get(), rechRef.get()));
+                requireActivity().runOnUiThread(() ->
+                        buildPdf(meter, balRef.get(), monthRef.get(), rechRef.get()));
             }
         };
 
+        // ── Balance fetch ──
         DescoServiceFacade.getInstance().fetchBalance(meter.accountNo, new Callback<BalanceResponse>() {
-            @Override public void onResponse(Call<BalanceResponse> call, Response<BalanceResponse> r) {
+            @Override
+            public void onResponse(Call<BalanceResponse> call, Response<BalanceResponse> r) {
                 if (r.isSuccessful() && r.body() != null) balRef.set(r.body().data);
                 checkAndBuild.run();
             }
-            @Override public void onFailure(Call<BalanceResponse> call, Throwable t) { checkAndBuild.run(); }
+            @Override
+            public void onFailure(Call<BalanceResponse> call, Throwable t) { checkAndBuild.run(); }
         });
 
+        // ── Monthly fetch ──
+        // ✅ FIX: YYYY-MM format (dash দিয়ে) — API এই format এ কাজ করে
+        // আগে ছিল: cal.get(Calendar.YEAR) + String.format("%02d", ...) → "202605" (ভুল)
+        // এখন:     cal.get(Calendar.YEAR) + "-" + String.format("%02d", ...) → "2026-05" (সঠিক)
         Calendar cal = Calendar.getInstance();
-        String to = cal.get(Calendar.YEAR) + String.format("%02d", cal.get(Calendar.MONTH)+1);
+        String monthTo = cal.get(Calendar.YEAR) + "-" + String.format("%02d", cal.get(Calendar.MONTH) + 1);
         cal.add(Calendar.MONTH, -5);
-        String from = cal.get(Calendar.YEAR) + String.format("%02d", cal.get(Calendar.MONTH)+1);
+        String monthFrom = cal.get(Calendar.YEAR) + "-" + String.format("%02d", cal.get(Calendar.MONTH) + 1);
 
-        DescoServiceFacade.getInstance().fetchMonthly(meter.accountNo, from, to, new Callback<MonthlyResponse>() {
-            @Override public void onResponse(Call<MonthlyResponse> call, Response<MonthlyResponse> r) {
-                if (r.isSuccessful() && r.body() != null) monthRef.set(r.body().data);
-                checkAndBuild.run();
-            }
-            @Override public void onFailure(Call<MonthlyResponse> call, Throwable t) { checkAndBuild.run(); }
-        });
+        DescoServiceFacade.getInstance().fetchMonthly(
+                meter.accountNo, monthFrom, monthTo,
+                new Callback<MonthlyResponse>() {
+                    @Override
+                    public void onResponse(Call<MonthlyResponse> call, Response<MonthlyResponse> r) {
+                        if (r.isSuccessful() && r.body() != null) monthRef.set(r.body().data);
+                        checkAndBuild.run();
+                    }
+                    @Override
+                    public void onFailure(Call<MonthlyResponse> call, Throwable t) { checkAndBuild.run(); }
+                });
 
+        // ── Recharge history fetch ──
         Calendar c2 = Calendar.getInstance();
-        String toD = c2.get(Calendar.YEAR)+"-"+String.format("%02d",c2.get(Calendar.MONTH)+1)+"-"+String.format("%02d",c2.get(Calendar.DAY_OF_MONTH));
+        String dateTo = c2.get(Calendar.YEAR) + "-"
+                + String.format("%02d", c2.get(Calendar.MONTH) + 1) + "-"
+                + String.format("%02d", c2.get(Calendar.DAY_OF_MONTH));
         c2.add(Calendar.MONTH, -3);
-        String fromD = c2.get(Calendar.YEAR)+"-"+String.format("%02d",c2.get(Calendar.MONTH)+1)+"-"+String.format("%02d",c2.get(Calendar.DAY_OF_MONTH));
+        String dateFrom = c2.get(Calendar.YEAR) + "-"
+                + String.format("%02d", c2.get(Calendar.MONTH) + 1) + "-"
+                + String.format("%02d", c2.get(Calendar.DAY_OF_MONTH));
 
-        DescoServiceFacade.getInstance().fetchRechargeHistory(meter.accountNo, fromD, toD, new Callback<RechargeResponse>() {
-            @Override public void onResponse(Call<RechargeResponse> call, Response<RechargeResponse> r) {
-                if (r.isSuccessful() && r.body() != null) rechRef.set(r.body().data);
-                checkAndBuild.run();
-            }
-            @Override public void onFailure(Call<RechargeResponse> call, Throwable t) { checkAndBuild.run(); }
-        });
+        DescoServiceFacade.getInstance().fetchRechargeHistory(
+                meter.accountNo, dateFrom, dateTo,
+                new Callback<RechargeResponse>() {
+                    @Override
+                    public void onResponse(Call<RechargeResponse> call, Response<RechargeResponse> r) {
+                        if (r.isSuccessful() && r.body() != null) rechRef.set(r.body().data);
+                        checkAndBuild.run();
+                    }
+                    @Override
+                    public void onFailure(Call<RechargeResponse> call, Throwable t) { checkAndBuild.run(); }
+                });
     }
 
     private void buildPdf(MeterProfile meter, BalanceResponse.Balance bal,
@@ -104,7 +121,7 @@ public class ReportsFragment extends Fragment {
                           List<RechargeResponse.RechargeRecord> recharge) {
         tvStatus.setText("রিপোর্ট তৈরি হচ্ছে...");
 
-        // Builder pattern
+        // Builder pattern ব্যবহার করে PDF তৈরি
         String path = PdfReportBuilder.newBuilder(requireContext())
                 .setMeter(meter)
                 .setBalance(bal)

@@ -42,14 +42,23 @@ public class DashboardFragment extends Fragment {
 
     TextView tvName, tvAccount, tvMeter, tvPhone, tvAddress, tvFeeder, tvPhase;
     TextView tvBalance, tvMonthlyBDT, tvReading, tvStateLabel, tvEstBill;
-    TextView tvAlertBanner, tvSuggestRecharge, tvChartEmpty;
+    TextView tvAlertBanner, tvSuggestRecharge, tvChartEmpty, tvChartTitle;
     CardView cardBalanceState, cardAlert, cardSuggest;
     ProgressBar progressDash;
     Button btnRefresh;
     BarChart barChart;
 
+    // ── Toggle buttons ──
+    Button btnToggleKwh, btnToggleBdt;
+
     AppDatabase db;
     MeterProfile activeMeter;
+
+    // ── Chart data cache — fetch একবারই হবে, toggle এ re-render হবে ──
+    private List<MonthlyResponse.MonthlyRecord> cachedMonthlyRecords = null;
+
+    // false = kWh mode (default), true = BDT mode
+    private boolean showBDT = false;
 
     private final AtomicBoolean isLoading = new AtomicBoolean(false);
     private final AtomicReference<CustomerResponse.Customer> customerRef = new AtomicReference<>();
@@ -67,34 +76,79 @@ public class DashboardFragment extends Fragment {
 
         btnRefresh.setOnClickListener(x -> {
             activeMeter = db.meterDao().getActiveMeter();
+            cachedMonthlyRecords = null; // cache clear — fresh fetch
             if (activeMeter != null) loadAll();
         });
+
+        // ── Toggle: kWh ──
+        btnToggleKwh.setOnClickListener(x -> {
+            showBDT = false;
+            updateToggleUI();
+            if (cachedMonthlyRecords != null) renderChart(cachedMonthlyRecords);
+        });
+
+        // ── Toggle: BDT ──
+        btnToggleBdt.setOnClickListener(x -> {
+            showBDT = true;
+            updateToggleUI();
+            if (cachedMonthlyRecords != null) renderChart(cachedMonthlyRecords);
+        });
+
+        updateToggleUI(); // initial state
 
         return v;
     }
 
     private void bindViews(View v) {
-        tvName          = v.findViewById(R.id.tvName);
-        tvAccount       = v.findViewById(R.id.tvAccount);
-        tvMeter         = v.findViewById(R.id.tvMeter);
-        tvPhone         = v.findViewById(R.id.tvPhone);
-        tvAddress       = v.findViewById(R.id.tvAddress);
-        tvFeeder        = v.findViewById(R.id.tvFeeder);
-        tvPhase         = v.findViewById(R.id.tvPhase);
-        tvBalance       = v.findViewById(R.id.tvBalance);
-        tvMonthlyBDT    = v.findViewById(R.id.tvUsage);
-        tvReading       = v.findViewById(R.id.tvReading);
-        tvStateLabel    = v.findViewById(R.id.tvStateLabel);
-        tvEstBill       = v.findViewById(R.id.tvEstBill);
-        tvAlertBanner   = v.findViewById(R.id.tvAlertBanner);
+        tvName           = v.findViewById(R.id.tvName);
+        tvAccount        = v.findViewById(R.id.tvAccount);
+        tvMeter          = v.findViewById(R.id.tvMeter);
+        tvPhone          = v.findViewById(R.id.tvPhone);
+        tvAddress        = v.findViewById(R.id.tvAddress);
+        tvFeeder         = v.findViewById(R.id.tvFeeder);
+        tvPhase          = v.findViewById(R.id.tvPhase);
+        tvBalance        = v.findViewById(R.id.tvBalance);
+        tvMonthlyBDT     = v.findViewById(R.id.tvUsage);
+        tvReading        = v.findViewById(R.id.tvReading);
+        tvStateLabel     = v.findViewById(R.id.tvStateLabel);
+        tvEstBill        = v.findViewById(R.id.tvEstBill);
+        tvAlertBanner    = v.findViewById(R.id.tvAlertBanner);
         tvSuggestRecharge = v.findViewById(R.id.tvSuggestRecharge);
-        tvChartEmpty    = v.findViewById(R.id.tvChartEmpty);
+        tvChartEmpty     = v.findViewById(R.id.tvChartEmpty);
+        tvChartTitle     = v.findViewById(R.id.tvChartTitle);
         cardBalanceState = v.findViewById(R.id.cardBalanceState);
-        cardAlert       = v.findViewById(R.id.cardAlert);
-        cardSuggest     = v.findViewById(R.id.cardSuggest);
-        progressDash    = v.findViewById(R.id.progressDash);
-        btnRefresh      = v.findViewById(R.id.btnRefresh);
-        barChart        = v.findViewById(R.id.barChart);
+        cardAlert        = v.findViewById(R.id.cardAlert);
+        cardSuggest      = v.findViewById(R.id.cardSuggest);
+        progressDash     = v.findViewById(R.id.progressDash);
+        btnRefresh       = v.findViewById(R.id.btnRefresh);
+        barChart         = v.findViewById(R.id.barChart);
+        btnToggleKwh     = v.findViewById(R.id.btnToggleKwh);
+        btnToggleBdt     = v.findViewById(R.id.btnToggleBdt);
+    }
+
+    // ── Toggle button এর active/inactive visual state ──
+    private void updateToggleUI() {
+        if (!showBDT) {
+            // kWh active
+            btnToggleKwh.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#1565C0")));
+            btnToggleKwh.setTextColor(Color.WHITE);
+            btnToggleBdt.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#E3F2FD")));
+            btnToggleBdt.setTextColor(Color.parseColor("#1565C0"));
+            if (tvChartTitle != null)
+                tvChartTitle.setText("মাসিক ব্যবহার (kWh)");
+        } else {
+            // BDT active
+            btnToggleBdt.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#1565C0")));
+            btnToggleBdt.setTextColor(Color.WHITE);
+            btnToggleKwh.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(Color.parseColor("#E3F2FD")));
+            btnToggleKwh.setTextColor(Color.parseColor("#1565C0"));
+            if (tvChartTitle != null)
+                tvChartTitle.setText("মাসিক খরচ (৳ BDT)");
+        }
     }
 
     private void loadAll() {
@@ -153,15 +207,6 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    /**
-     * ══════════════════════════════════════════════════════════════════
-     * আনুমানিক বিল — দিন-ভিত্তিক average পদ্ধতি
-     *
-     * যেমন: আজ ৩০ মে, এই মাসে ৮৫৭.৯৭ টাকা খরচ হয়েছে
-     *   → daily avg = 857.97 ÷ 30 = 28.60 tk/day
-     *   → মাসে ৩১ দিন → আনুমানিক মাসিক = 28.60 × 31 = ৮৮৬.৫৩ টাকা
-     * ══════════════════════════════════════════════════════════════════
-     */
     private double calculateEstimatedMonthlyBill(double usedBDTSoFar) {
         Calendar cal = Calendar.getInstance();
         int todayDate = cal.get(Calendar.DAY_OF_MONTH);
@@ -181,71 +226,47 @@ public class DashboardFragment extends Fragment {
         tvPhase.setText("ফেজ: " + m.phase);
 
         if (hasBalance) {
-            double balance          = m.balance;            // current balance (টাকা)
-            double usedThisMonth   = m.monthlyBDT;         // এই মাসে ইতিমধ্যে খরচ (BDT)
-            double estimatedFull   = calculateEstimatedMonthlyBill(usedThisMonth); // পুরো মাসের আনুমানিক
+            double balance       = m.balance;
+            double usedThisMonth = m.monthlyBDT;
+            double estimatedFull = calculateEstimatedMonthlyBill(usedThisMonth);
 
             tvBalance.setText("৳ " + String.format("%.2f", balance));
             tvMonthlyBDT.setText(String.format("৳ %.2f", usedThisMonth));
             tvReading.setText("সর্বশেষ: " + m.lastReading);
             tvEstBill.setText(String.format("আনুমানিক বিল: ৳ %.2f", estimatedFull));
 
-            // ══════════════════════════════════════════════════════════
-            // সঠিক calculation:
-            //
-            //   বাকি মাসের সম্ভাব্য খরচ = আনুমানিক পুরো মাসের বিল − এই মাসে ইতিমধ্যে খরচ
-            //   দরকারি রিচার্জ          = বাকি সম্ভাব্য খরচ − current balance
-            //
-            //   যদি (বাকি সম্ভাব্য খরচ − current balance) > 0
-            //     → এই পরিমাণ রিচার্জ করতে হবে
-            //   যদি ≤ 0
-            //     → ব্যালেন্স যথেষ্ট আছে
-            //
-            // উদাহরণ (screenshot থেকে):
-            //   usedThisMonth   = ৮৫৭.৯৭ (API: currentMonthConsumption)
-            //   estimatedFull   ≈ ৮৮৭.৫৩ (30 দিনে ৮৫৭.৯৭, মাসে ৩১ দিন)
-            //   remainingCost   = ৮৮৭.৫৩ − ৮৫৭.৯৭ = ২৯.৫৬ (বাকি ১ দিনের খরচ)
-            //   balance         = ৪৭২.৭৩
-            //   needToRecharge  = ২৯.৫৬ − ৪৭২.৭৩ = −৪৪৩.১৭ (negative → যথেষ্ট আছে)
-            // ══════════════════════════════════════════════════════════
-            double remainingEstimatedCost = estimatedFull - usedThisMonth;  // বাকি মাসের সম্ভাব্য খরচ
-            double needToRecharge         = remainingEstimatedCost - balance; // কত রিচার্জ দরকার
+            double remainingEstimatedCost = estimatedFull - usedThisMonth;
+            double needToRecharge         = remainingEstimatedCost - balance;
 
             cardSuggest.setVisibility(View.VISIBLE);
 
+            MeterState state = MeterStateFactory.resolve(balance, activeMeter.lowBalanceThreshold);
+            tvStateLabel.setText(state.getStateLabel());
+            tvStateLabel.setTextColor(state.getStateColor());
+
             if (needToRecharge > 0) {
-                // Negative balance situation — রিচার্জ দরকার
-                double suggested = Math.ceil(needToRecharge / 100.0) * 100.0; // ১০০ এর গুণিতকে round up
+                double suggested = Math.ceil(needToRecharge / 100.0) * 100.0;
                 tvSuggestRecharge.setText(
                         "💡 এই মাসে বিল ৳" + String.format("%.0f", estimatedFull) +
                                 " কিন্তু ব্যালেন্স মাত্র ৳" + String.format("%.2f", balance) +
                                 "।\nআরও প্রায় ৳" + String.format("%.0f", suggested) + " রিচার্জ করুন।"
                 );
-                // State: low balance চেক
-                MeterState state = MeterStateFactory.resolve(balance, activeMeter.lowBalanceThreshold);
-                tvStateLabel.setText(state.getStateLabel());
-                tvStateLabel.setTextColor(state.getStateColor());
                 if (state.showAlert()) {
                     cardAlert.setVisibility(View.VISIBLE);
                     tvAlertBanner.setText("⚠️ ব্যালেন্স কম! দ্রুত রিচার্জ করুন। নির্ধারিত সীমা: ৳ "
                             + activeMeter.lowBalanceThreshold);
                 }
             } else {
-                // ব্যালেন্স যথেষ্ট
                 tvSuggestRecharge.setText(
                         "✅ এই মাসে বিল ৳" + String.format("%.0f", estimatedFull) +
                                 " — ব্যালেন্স ৳" + String.format("%.2f", balance) + " যথেষ্ট আছে।"
                 );
-                MeterState state = MeterStateFactory.resolve(balance, activeMeter.lowBalanceThreshold);
-                tvStateLabel.setText(state.getStateLabel());
-                tvStateLabel.setTextColor(state.getStateColor());
                 if (state.showAlert()) {
                     cardAlert.setVisibility(View.VISIBLE);
                     tvAlertBanner.setText("⚠️ ব্যালেন্স কম! দ্রুত রিচার্জ করুন। নির্ধারিত সীমা: ৳ "
                             + activeMeter.lowBalanceThreshold);
                 }
             }
-
         } else {
             tvBalance.setText("৳ —");
             tvMonthlyBDT.setText("৳ —");
@@ -258,9 +279,10 @@ public class DashboardFragment extends Fragment {
 
     private void loadMonthlyChart() {
         Calendar cal = Calendar.getInstance();
-        String to = String.format("%04d%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
+        // ✅ YYYY-MM format (dash সহ) — API এই format এ data দেয়
+        String to   = String.format("%04d-%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
         cal.add(Calendar.MONTH, -11);
-        String from = String.format("%04d%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
+        String from = String.format("%04d-%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1);
 
         DescoServiceFacade.getInstance().fetchMonthly(
                 activeMeter.accountNo, from, to,
@@ -273,8 +295,10 @@ public class DashboardFragment extends Fragment {
                                     && response.body() != null
                                     && response.body().data != null
                                     && !response.body().data.isEmpty()) {
+                                // cache করে রাখি — toggle এ re-use হবে
+                                cachedMonthlyRecords = response.body().data;
                                 tvChartEmpty.setVisibility(View.GONE);
-                                renderChart(response.body().data);
+                                renderChart(cachedMonthlyRecords);
                             } else {
                                 showChartEmpty();
                             }
@@ -295,36 +319,73 @@ public class DashboardFragment extends Fragment {
         barChart.invalidate();
     }
 
+    /**
+     * renderChart — showBDT flag দেখে kWh বা BDT value ব্যবহার করে।
+     * X-axis এ শুধু মাসের নাম দেখায় (Jan, Feb, Mar...)
+     */
     private void renderChart(List<MonthlyResponse.MonthlyRecord> records) {
         List<BarEntry> entries = new ArrayList<>();
         List<String>   labels  = new ArrayList<>();
 
+        final String[] monthNames = {
+                "Jan","Feb","Mar","Apr","May","Jun",
+                "Jul","Aug","Sep","Oct","Nov","Dec"
+        };
+
         for (int i = 0; i < records.size(); i++) {
             MonthlyResponse.MonthlyRecord r = records.get(i);
-            entries.add(new BarEntry(i, (float) r.consumption));
 
+            // ── Value: kWh বা BDT ──
+            float value = showBDT
+                    ? (float) r.amount       // BDT (টাকা)
+                    : (float) r.consumption; // kWh
+
+            entries.add(new BarEntry(i, value));
+
+            // ── Label: শুধু মাসের নাম (Jan, Feb...) ──
             String raw = r.month != null ? r.month : "";
-            String label;
-            if (raw.length() >= 6) {
-                try {
-                    int year  = Integer.parseInt(raw.substring(0, 4));
-                    int month = Integer.parseInt(raw.substring(4, 6));
-                    String[] months = {"Jan","Feb","Mar","Apr","May","Jun",
-                            "Jul","Aug","Sep","Oct","Nov","Dec"};
-                    label = months[Math.min(month - 1, 11)] + "\n" + String.valueOf(year).substring(2);
-                } catch (NumberFormatException e) {
-                    label = raw;
+            String label = raw; // fallback
+
+            try {
+                int month = -1;
+                if (raw.contains("-") && raw.length() >= 7) {
+                    // YYYY-MM format
+                    month = Integer.parseInt(raw.split("-")[1].trim());
+                } else if (raw.length() >= 6) {
+                    // YYYYMM format (fallback)
+                    month = Integer.parseInt(raw.substring(4, 6));
                 }
-            } else {
-                label = raw;
-            }
+                if (month >= 1 && month <= 12) {
+                    label = monthNames[month - 1];
+                }
+            } catch (Exception ignored) {}
+
             labels.add(label);
         }
 
-        BarDataSet ds = new BarDataSet(entries, "kWh");
-        ds.setColor(Color.parseColor("#1565C0"));
-        ds.setValueTextColor(Color.parseColor("#1565C0"));
+        // ── Bar color: kWh = নীল, BDT = সবুজ ──
+        int barColor = showBDT
+                ? Color.parseColor("#2E7D32")  // সবুজ (টাকা)
+                : Color.parseColor("#1565C0"); // নীল (kWh)
+
+        BarDataSet ds = new BarDataSet(entries, showBDT ? "৳ BDT" : "kWh");
+        ds.setColor(barColor);
+        ds.setValueTextColor(barColor);
         ds.setValueTextSize(9f);
+
+        // Value format: BDT হলে "৳ 857", kWh হলে "139.4"
+        ds.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                if (showBDT) {
+                    return "৳" + String.format("%.0f", value);
+                } else {
+                    return value == (int) value
+                            ? String.valueOf((int) value)
+                            : String.format("%.1f", value);
+                }
+            }
+        });
 
         BarData data = new BarData(ds);
         data.setBarWidth(0.55f);
@@ -335,8 +396,8 @@ public class DashboardFragment extends Fragment {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
         xAxis.setDrawGridLines(false);
-        xAxis.setTextSize(9f);
-        xAxis.setLabelRotationAngle(-30f);
+        xAxis.setTextSize(10f);
+        xAxis.setLabelRotationAngle(0f); // সোজা — মাসের নাম ছোট বলে ঘোরানো দরকার নেই
         xAxis.setTextColor(Color.parseColor("#555555"));
         xAxis.setLabelCount(records.size(), true);
 
@@ -347,8 +408,8 @@ public class DashboardFragment extends Fragment {
         barChart.getAxisLeft().setGridColor(Color.parseColor("#EEEEEE"));
         barChart.setDrawGridBackground(false);
         barChart.setDrawBorders(false);
-        barChart.setExtraBottomOffset(20f);
-        barChart.animateY(700);
+        barChart.setExtraBottomOffset(10f);
+        barChart.animateY(600);
         barChart.invalidate();
     }
 }
