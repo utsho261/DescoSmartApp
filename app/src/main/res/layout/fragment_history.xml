@@ -43,7 +43,7 @@
                     android:id="@+id/tvMonthTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="হিসাব হচ্ছে..."
+                    android:text="৳ 0"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
@@ -75,7 +75,7 @@
                     android:id="@+id/tvYearTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="হিসাব হচ্ছে..."
+                    android:text="৳ 0"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold"/>
@@ -110,11 +110,12 @@
             android:textColor="#1565C0"/>
     </LinearLayout>
 
-    <!-- Loading -->
+    <!-- Loading spinner — center এ দেখাবে -->
     <ProgressBar android:id="@+id/progressHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="24dp"
         android:visibility="gone"/>
 
     <!-- Empty state -->
@@ -128,7 +129,7 @@
         android:visibility="gone"
         android:paddingTop="40dp"/>
 
-    <!-- List -->
+    <!-- List — FIXED: default visibility="gone", Fragment এ visible করা হবে -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHistory"
         android:layout_width="match_parent"
@@ -138,6 +139,7 @@
         android:paddingEnd="14dp"
         android:paddingTop="4dp"
         android:paddingBottom="14dp"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        android:visibility="gone"/>
 
 </LinearLayout>

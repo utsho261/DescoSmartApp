@@ -9,10 +9,6 @@ import com.example.descosmartapp.model.RechargeResponse;
 
 import retrofit2.Callback;
 
-/**
- * FACADE PATTERN — Single simplified interface to all DESCO backend services.
- * Callers don't need to know about Retrofit, ApiClient, or specific endpoints.
- */
 public class DescoServiceFacade {
 
     private static DescoServiceFacade instance;
@@ -43,11 +39,16 @@ public class DescoServiceFacade {
         api.getMonthlyConsumption(accountNo, from, to).enqueue(cb);
     }
 
+    /** accountNo দিয়ে recharge history */
     public void fetchRechargeHistory(String accountNo, String from, String to, Callback<RechargeResponse> cb) {
         api.getRechargeHistory(accountNo, from, to).enqueue(cb);
     }
 
-    /** Smart search — auto detect account vs meter number */
+    /** meterNo দিয়ে recharge history (fallback) */
+    public void fetchRechargeHistoryByMeter(String meterNo, String from, String to, Callback<RechargeResponse> cb) {
+        api.getRechargeHistoryByMeter(meterNo, from, to).enqueue(cb);
+    }
+
     public void smartFetch(String input, Callback<CustomerResponse> cb) {
         if (input.length() > 10) {
             fetchCustomerByMeter(input, cb);

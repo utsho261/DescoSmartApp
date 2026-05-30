@@ -19,15 +19,27 @@ public interface DescoApi {
     @GET("getBalance")
     Call<BalanceResponse> getBalance(@Query("accountNo") String accountNo);
 
+    /** Monthly — YYYYMM format */
     @GET("getCustomerMonthlyConsumption")
     Call<MonthlyResponse> getMonthlyConsumption(
             @Query("accountNo") String accountNo,
             @Query("monthFrom") String from,
             @Query("monthTo") String to);
 
+    /** Recharge history — accountNo দিয়ে */
     @GET("getRechargeHistory")
     Call<RechargeResponse> getRechargeHistory(
             @Query("accountNo") String accountNo,
+            @Query("dateFrom") String from,
+            @Query("dateTo") String to);
+
+    /**
+     * ADDED: Recharge history — meterNo দিয়ে (fallback)
+     * কিছু DESCO API endpoint meterNo accept করে accountNo এর বদলে
+     */
+    @GET("getRechargeHistory")
+    Call<RechargeResponse> getRechargeHistoryByMeter(
+            @Query("meterNo") String meterNo,
             @Query("dateFrom") String from,
             @Query("dateTo") String to);
 }
